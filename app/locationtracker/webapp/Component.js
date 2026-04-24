@@ -22,7 +22,6 @@ sap.ui.define([
         permissionText: "Awaiting browser location permission"
       }), "view");
 
-      this.getRouter().initialize();
     }
   });
 });
