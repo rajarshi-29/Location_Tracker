@@ -8,15 +8,15 @@
 |**Template Used**<br>Basic V4|
 |**Service Type**<br>Local CAP|
 |**Service URL**<br>http://localhost:4004/tracker/|
-|**Module Name**<br>location_tracker|
-|**Application Title**<br>location_tracker|
-|**Namespace**<br>com.location_tracker|
+|**Module Name**<br>locationtracker|
+|**Application Title**<br>locationtracker|
+|**Namespace**<br>com.locationtracker.locationtracker|
 |**UI5 Theme**<br>sap_horizon|
 |**UI5 Version**<br>1.147.1|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>True, see https://www.npmjs.com/package/@sap-ux/eslint-plugin-fiori-tools#rules for the eslint rules.|
 
-## location_tracker
+## locationtracker
 
 An SAP Fiori application.
 
@@ -24,10 +24,9 @@ An SAP Fiori application.
 
 -   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  To launch the generated app, start your CAP project:  and navigate to the following location in your browser:
 
-http://localhost:4004/location_tracker/webapp/index.html
+http://localhost:4004/com.locationtracker.locationtracker/index.html
 
 #### Pre-requisites:
 
 1. Active NodeJS LTS (Long Term Support) version and associated supported NPM version.  (See https://nodejs.org)
-
 
