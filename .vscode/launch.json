@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run location_tracker-1",
+      "name": "Run locationtracker-1",
       "request": "launch",
       "type": "node",
       "cwd": "${workspaceFolder}",
@@ -19,7 +19,7 @@
       "envFile": "${workspaceFolder}/.env1",
       "env": {
         "NODE_ENV": "development",
-        "run.config": "{\"handlerId\":\"cap_run_config_handler_id\",\"runnableId\":\"{\\\"projectPath\\\":\\\"/home/user/location_tracker\\\",\\\"profileName\\\":\\\"development\\\"}\"}"
+        "run.config": "{\"handlerId\":\"cap_run_config_handler_id\",\"runnableId\":\"{\\\"projectPath\\\":\\\"/home/user/locationtracker\\\",\\\"profileName\\\":\\\"development\\\"}\"}"
       }
     }
   ]
