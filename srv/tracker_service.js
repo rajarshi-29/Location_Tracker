@@ -1,5 +1,6 @@
 const cds = require("@sap/cds");
 const { SELECT, INSERT, UPDATE } = cds.ql;
+const SNAPSHOT_INTERVAL_MS = 15 * 60 * 1000;
 
 module.exports = cds.service.impl(function () {
   const { Trips, LocationPoints, MetricSnapshots } = this.entities;
@@ -122,7 +123,7 @@ module.exports = cds.service.impl(function () {
 
   const captureSnapshotIfDue = async (forceSnapshot) => {
     const now = Date.now();
-    const shouldCapture = forceSnapshot || !lastSnapshotAt || now - lastSnapshotAt >= 15 * 60 * 1000;
+    const shouldCapture = forceSnapshot || !lastSnapshotAt || now - lastSnapshotAt >= SNAPSHOT_INTERVAL_MS;
 
     if (!shouldCapture) {
       return null;
@@ -162,9 +163,9 @@ module.exports = cds.service.impl(function () {
     const totalTrips = Number(tripCountRow?.count || 0);
     const totalCompletedTrips = Number(completedTripCountRow?.count || 0);
     const totalPoints = Number(pointCountRow?.count || 0);
-    const completionRate = totalTrips ? round2((totalCompletedTrips / totalTrips) * 100) : 0;
-    const avgPointsPerTrip = totalTrips ? round2(totalPoints / totalTrips) : 0;
-    const avgGpsAccuracy = round2(Number(accuracyAverageRow?.avgAccuracy || 0));
+    const completionRate = totalTrips ? roundToTwoDecimals((totalCompletedTrips / totalTrips) * 100) : 0;
+    const avgPointsPerTrip = totalTrips ? roundToTwoDecimals(totalPoints / totalTrips) : 0;
+    const avgGpsAccuracy = roundToTwoDecimals(Number(accuracyAverageRow?.avgAccuracy || 0));
 
     const durations = completedTrips
       .map((trip) => ({
@@ -175,15 +176,15 @@ module.exports = cds.service.impl(function () {
       .map((trip) => trip.endedAt - trip.startedAt);
 
     const avgSessionDurationMs = durations.length
-      ? round2(durations.reduce((sum, duration) => sum + duration, 0) / durations.length)
+      ? roundToTwoDecimals(durations.reduce((sum, duration) => sum + duration, 0) / durations.length)
       : 0;
 
     const ingestAttempts = operationMetrics.recordLocation.attempts;
     const ingestSuccess = operationMetrics.recordLocation.success;
     const ingestFailure = operationMetrics.recordLocation.failure;
-    const ingestSuccessRate = ingestAttempts ? round2((ingestSuccess / ingestAttempts) * 100) : 0;
+    const ingestSuccessRate = ingestAttempts ? roundToTwoDecimals((ingestSuccess / ingestAttempts) * 100) : 0;
     const avgIngestLatencyMs = ingestAttempts
-      ? round2(operationMetrics.recordLocation.totalLatencyMs / ingestAttempts)
+      ? roundToTwoDecimals(operationMetrics.recordLocation.totalLatencyMs / ingestAttempts)
       : 0;
 
     return {
@@ -213,6 +214,6 @@ function createMetricBucket() {
   };
 }
 
-function round2(value) {
+function roundToTwoDecimals(value) {
   return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
 }

@@ -4,6 +4,7 @@ sap.ui.define([
   "sap/m/MessageToast"
 ], function (Controller, MessageBox, MessageToast) {
   "use strict";
+  const MAX_LATENCY_SAMPLES = 200;
 
   return Controller.extend("com.locationtracker.locationtracker.controller.App", {
     onInit: function () {
@@ -153,7 +154,7 @@ sap.ui.define([
   };
 
   try {
-    const clientUpdateStart = window.performance && window.performance.now ? window.performance.now() : Date.now();
+    const clientUpdateStart = this._getHighResTime();
     const point = await this._post("/tracker/recordLocation", payload);
     const latLng = [Number(point.latitude), Number(point.longitude)];
     this._points.push(latLng);
@@ -161,11 +162,9 @@ sap.ui.define([
     this._viewModel.setProperty("/totalPoints", this._points.length);
     this._viewModel.setProperty("/statusText", "Tracking is live");
     this._syncPolyline(latLng);
-    await this._waitForNextFrame();
-
-    const clientUpdateEnd = window.performance && window.performance.now ? window.performance.now() : Date.now();
+    const clientUpdateEnd = this._getHighResTime();
     this._recordClientUpdateLatency(clientUpdateEnd - clientUpdateStart);
-    await this._refreshMetrics();
+    this._refreshMetrics();
   } catch (error) {
     MessageBox.error(error.message || "Unable to persist the current position.");
   }
@@ -334,21 +333,13 @@ sap.ui.define([
       }
 
       this._clientUpdateLatencyMs.push(latencyMs);
-      if (this._clientUpdateLatencyMs.length > 200) {
+      if (this._clientUpdateLatencyMs.length > MAX_LATENCY_SAMPLES) {
         this._clientUpdateLatencyMs.shift();
       }
     },
 
-    _waitForNextFrame: function () {
-      return new Promise(function (resolve) {
-        if (!window.requestAnimationFrame) {
-          resolve();
-          return;
-        }
-        window.requestAnimationFrame(function () {
-          resolve();
-        });
-      });
+    _getHighResTime: function () {
+      return window.performance && window.performance.now ? window.performance.now() : Date.now();
     }
   });
 });
