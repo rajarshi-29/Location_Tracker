@@ -1,5 +1,5 @@
 {
-  "name": "location_tracker",
+  "name": "locationtracker",
   "version": "1.0.0",
   "dependencies": {
     "@sap/cds": "^9"
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "watch-location_tracker": "cds watch --open com.locationtracker.locationtracker/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-locationtracker": "cds watch --open com.locationtracker.locationtracker/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "workspaces": [
