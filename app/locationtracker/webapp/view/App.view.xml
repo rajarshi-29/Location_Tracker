@@ -52,6 +52,23 @@
               </Panel>
             </HBox>
 
+            <Panel headerText="Performance Metrics" class="metricCard">
+              <content>
+                <VBox class="metricContent">
+                  <ObjectStatus title="Total Trips" text="{view>/metrics/totalTrips}" />
+                  <ObjectStatus title="Completed Trips" text="{view>/metrics/completedTrips}" />
+                  <ObjectStatus title="Completion Rate" text="{= ${view>/metrics/completionRate} + '%'}" />
+                  <ObjectStatus title="Avg Points / Trip" text="{view>/metrics/avgPointsPerTrip}" />
+                  <ObjectStatus title="Avg GPS Accuracy (m)" text="{view>/metrics/avgGpsAccuracy}" />
+                  <ObjectStatus title="Avg Session Duration (ms)" text="{view>/metrics/avgSessionDurationMs}" />
+                  <ObjectStatus title="Backend Ingest Success" text="{= ${view>/metrics/ingestSuccessRate} + '%'}" />
+                  <ObjectStatus title="Avg Backend Ingest Latency (ms)" text="{view>/metrics/avgIngestLatencyMs}" />
+                  <ObjectStatus title="Avg Client Update Latency (ms)" text="{view>/metrics/avgClientUpdateLatencyMs}" />
+                  <ObjectStatus title="Latest Client Update Latency (ms)" text="{view>/metrics/latestClientUpdateLatencyMs}" />
+                </VBox>
+              </content>
+            </Panel>
+
             <VBox class="mapShell">
               <core:HTML content='&lt;div id="tracker-map" class="trackerMap"&gt;&lt;/div&gt;' />
             </VBox>

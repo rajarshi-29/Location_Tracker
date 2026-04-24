@@ -12,6 +12,7 @@ sap.ui.define([
       this._polyline = null;
       this._marker = null;
       this._points = [];
+      this._clientUpdateLatencyMs = [];
       this._viewModel = this.getOwnerComponent().getModel("view");
 
       this.getView().addEventDelegate({
@@ -21,6 +22,7 @@ sap.ui.define([
       });
 
       this._loadActiveTrip();
+      this._refreshMetrics();
     },
 
     onAfterRendering: function () {
@@ -60,6 +62,7 @@ sap.ui.define([
         );
 
         await this.onRefreshPath();
+        await this._refreshMetrics();
         MessageToast.show("Trip started");
       } catch (error) {
         MessageBox.error(error.message || "Unable to start tracking.");
@@ -82,6 +85,7 @@ sap.ui.define([
         this._viewModel.setProperty("/currentTrip", stoppedTrip);
         this._viewModel.setProperty("/tracking", false);
         this._viewModel.setProperty("/statusText", "Tracking stopped");
+        await this._refreshMetrics();
         MessageToast.show("Trip stopped");
       } catch (error) {
         MessageBox.error(error.message || "Unable to stop tracking.");
@@ -109,6 +113,7 @@ sap.ui.define([
         this._viewModel.setProperty("/lastPoint", lastPoint);
         this._viewModel.setProperty("/totalPoints", this._points.length);
         this._syncPolyline();
+        await this._refreshMetrics();
       } catch (error) {
         MessageBox.error(error.message || "Unable to refresh the path.");
       }
@@ -148,6 +153,7 @@ sap.ui.define([
   };
 
   try {
+    const clientUpdateStart = window.performance && window.performance.now ? window.performance.now() : Date.now();
     const point = await this._post("/tracker/recordLocation", payload);
     const latLng = [Number(point.latitude), Number(point.longitude)];
     this._points.push(latLng);
@@ -155,6 +161,11 @@ sap.ui.define([
     this._viewModel.setProperty("/totalPoints", this._points.length);
     this._viewModel.setProperty("/statusText", "Tracking is live");
     this._syncPolyline(latLng);
+    await this._waitForNextFrame();
+
+    const clientUpdateEnd = window.performance && window.performance.now ? window.performance.now() : Date.now();
+    this._recordClientUpdateLatency(clientUpdateEnd - clientUpdateStart);
+    await this._refreshMetrics();
   } catch (error) {
     MessageBox.error(error.message || "Unable to persist the current position.");
   }
@@ -295,6 +306,49 @@ sap.ui.define([
       } catch (error) {
         return response.statusText || "Unknown request error";
       }
+    },
+
+    _refreshMetrics: async function () {
+      try {
+        const metrics = await this._get("/tracker/metrics()");
+        const averageClientLatency = this._clientUpdateLatencyMs.length
+          ? this._clientUpdateLatencyMs.reduce(function (sum, latencyMs) { return sum + latencyMs; }, 0) / this._clientUpdateLatencyMs.length
+          : 0;
+
+        const latestLatency = this._clientUpdateLatencyMs.length
+          ? this._clientUpdateLatencyMs[this._clientUpdateLatencyMs.length - 1]
+          : 0;
+
+        this._viewModel.setProperty("/metrics", Object.assign({}, metrics, {
+          avgClientUpdateLatencyMs: Number(averageClientLatency.toFixed(2)),
+          latestClientUpdateLatencyMs: Number(latestLatency.toFixed(2))
+        }));
+      } catch (error) {
+        this._viewModel.setProperty("/statusText", "Metrics unavailable");
+      }
+    },
+
+    _recordClientUpdateLatency: function (latencyMs) {
+      if (!Number.isFinite(latencyMs) || latencyMs < 0) {
+        return;
+      }
+
+      this._clientUpdateLatencyMs.push(latencyMs);
+      if (this._clientUpdateLatencyMs.length > 200) {
+        this._clientUpdateLatencyMs.shift();
+      }
+    },
+
+    _waitForNextFrame: function () {
+      return new Promise(function (resolve) {
+        if (!window.requestAnimationFrame) {
+          resolve();
+          return;
+        }
+        window.requestAnimationFrame(function () {
+          resolve();
+        });
+      });
     }
   });
 });
