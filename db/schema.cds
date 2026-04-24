@@ -22,3 +22,16 @@ entity LocationPoints : cuid, managed {
   recordedAt : Timestamp;
   source     : String(30);
 }
+
+entity MetricSnapshots : cuid, managed {
+  capturedAt           : Timestamp;
+  totalTrips           : Integer;
+  completedTrips       : Integer;
+  completionRate       : Decimal(5, 2);
+  totalPoints          : Integer;
+  avgPointsPerTrip     : Decimal(9, 2);
+  avgGpsAccuracy       : Decimal(9, 2);
+  avgSessionDurationMs : Decimal(15, 2);
+  ingestSuccessRate    : Decimal(5, 2);
+  avgIngestLatencyMs   : Decimal(9, 2);
+}
