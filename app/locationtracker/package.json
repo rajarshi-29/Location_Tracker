@@ -8,16 +8,17 @@
     "watch": "cds watch",
     "watch-locationtracker": "cds watch --open com.locationtracker.locationtracker/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
-"dependencies": {
-  "@sap/cds": "^9",
-  "@cap-js/hana": "^2",
-  "express": "^4"
-},
-"devDependencies": {
-  "@sap/cds-dk": "^9",
-  "@cap-js/sqlite": "^2",
-  "cds-plugin-ui5": "^0.13.0"
-},
+  "dependencies": {
+    "@cap-js/hana": "^2",
+    "@sap/cds": "^9",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2",
+    "@sap/cds-dk": "^9",
+    "@sap/ux-ui5-tooling": "^1.23.0",
+    "cds-plugin-ui5": "^0.13.0"
+  },
   "cds": {
     "folders": {
       "db": "db",
