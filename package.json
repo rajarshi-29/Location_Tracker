@@ -2,10 +2,14 @@
   "name": "locationtracker",
   "version": "1.0.0",
   "dependencies": {
-    "@sap/cds": "^9"
+    "@cap-js/hana": "^2.7.1",
+    "@sap/cds": "^9.9.0",
+    "@sap/cds-dk": "^9.9.0",
+    "express": "^4.22.1"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^2",
+    "@cap-js/sqlite": "^2.2.1",
+    "@sap/ux-ui5-tooling": "^1.23.0",
     "cds-plugin-ui5": "^0.13.0"
   },
   "scripts": {

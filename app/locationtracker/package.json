@@ -1,21 +1,52 @@
 {
   "name": "locationtracker",
-  "version": "0.0.1",
-  "description": "An SAP Fiori application.",
-  "keywords": [
-    "ui5",
-    "openui5",
-    "sapui5"
-  ],
-  "main": "webapp/index.html",
-  "dependencies": {},
-  "devDependencies": {
-    "@ui5/cli": "^4.0.33",
-    "@sap/ux-ui5-tooling": "1",
-    "@sap-ux/eslint-plugin-fiori-tools": "^9.0.0",
-    "eslint": "^9"
-  },
+  "version": "1.0.0",
+  "private": true,
+  "description": "CAP full stack location tracker with SAPUI5 frontend and SAP HANA-ready persistence.",
   "scripts": {
-    "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
-  }
+    "start": "cds-serve",
+    "watch": "cds watch",
+    "watch-locationtracker": "cds watch --open com.locationtracker.locationtracker/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+"dependencies": {
+  "@sap/cds": "^9",
+  "@cap-js/hana": "^2",
+  "express": "^4"
+},
+"devDependencies": {
+  "@sap/cds-dk": "^9",
+  "@cap-js/sqlite": "^2",
+  "cds-plugin-ui5": "^0.13.0"
+},
+  "cds": {
+    "folders": {
+      "db": "db",
+      "srv": "srv",
+      "app": "app"
+    },
+    "requires": {
+      "db": {
+        "[development]": {
+          "kind": "sqlite",
+          "impl": "@cap-js/sqlite",
+          "credentials": {
+            "url": "db/location-tracker.sqlite"
+          }
+        },
+        "[hybrid]": {
+          "kind": "hana",
+          "impl": "@cap-js/hana",
+          "deploy-format": "hdbtable"
+        },
+        "[production]": {
+          "kind": "hana",
+          "impl": "@cap-js/hana",
+          "deploy-format": "hdbtable"
+        }
+      }
+    }
+  },
+  "workspaces": [
+    "app/*"
+  ]
 }
