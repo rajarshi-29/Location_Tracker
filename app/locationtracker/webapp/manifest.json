@@ -93,6 +93,34 @@
       },
       "routes": [
         {
+          "name": "RouteLogin",
+          "pattern": "login",
+          "target": [
+            "TargetLogin"
+          ]
+        },
+        {
+          "name": "RouteDashboard",
+          "pattern": "dashboard/{role}",
+          "target": [
+            "TargetDashboard"
+          ]
+        },
+        {
+          "name": "RouteDriver",
+          "pattern": "driver/:?query:",
+          "target": [
+            "TargetDriver"
+          ]
+        },
+        {
+          "name": "RouteSupervisor",
+          "pattern": "supervisor/:?query:",
+          "target": [
+            "TargetSupervisor"
+          ]
+        },
+        {
           "name": "RouteTrips",
           "pattern": ":?query:",
           "target": [
@@ -101,6 +129,22 @@
         }
       ],
       "targets": {
+        "TargetLogin": {
+          "id": "Login",
+          "name": "Login"
+        },
+        "TargetDashboard": {
+          "id": "Dashboard",
+          "name": "Dashboard"
+        },
+        "TargetDriver": {
+          "id": "Trips",
+          "name": "Trips"
+        },
+        "TargetSupervisor": {
+          "id": "Supervisor",
+          "name": "Supervisor"
+        },
         "TargetTrips": {
           "id": "Trips",
           "name": "Trips"

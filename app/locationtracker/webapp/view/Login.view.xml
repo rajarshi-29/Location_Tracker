@@ -1,0 +1,96 @@
+<mvc:View
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  displayBlock="true">
+  <Page showHeader="false" enableScrolling="false" class="loginPage">
+    <content>
+      <VBox alignItems="Center" justifyContent="Center" class="loginContainer" height="100%">
+        <VBox width="100%" maxWidth="400px" class="loginPanel">
+          <!-- Header -->
+          <VBox alignItems="Center" class="loginHeader">
+            <Title text="Live Location Tracker" level="H1" class="appTitle" />
+            <Text text="Welcome to Live Location Tracker" class="subtitle" />
+          </VBox>
+
+          <!-- Login Form -->
+          <Panel class="loginForm">
+            <content>
+              <VBox spacing="1rem">
+                <!-- Username Input -->
+                <VBox spacing="0.5rem">
+                  <Label text="Username" required="true" />
+                  <Input
+                    id="usernameInput"
+                    placeholder="User123"
+                    value="{login>/username}"
+                    type="Text"
+                    width="100%"
+                    class="inputField" />
+                </VBox>
+
+                <!-- Password Input -->
+                <VBox spacing="0.5rem">
+                  <Label text="Password" required="true" />
+                  <PasswordInput
+                    id="passwordInput"
+                    placeholder="••••••••"
+                    value="{login>/password}"
+                    width="100%"
+                    class="inputField" />
+                </VBox>
+
+                <!-- Role Selection Dropdown -->
+                <VBox spacing="0.5rem">
+                  <Label text="Login As" required="true" />
+                  <Select
+                    id="roleSelect"
+                    items="{login>/roles}"
+                    selectedKey="{login>/selectedRole}"
+                    width="100%"
+                    class="inputField">
+                    <core:Item key="{login>key}" text="{login>text}" icon="{login>icon}" />
+                  </Select>
+                </VBox>
+
+                <!-- Remember Me -->
+                <CheckBox
+                  text="Remember me"
+                  selected="{login>/rememberMe}"
+                  class="rememberMe" />
+
+                <!-- Error Message -->
+                <MessageStrip
+                  text="{login>/errorMessage}"
+                  type="Error"
+                  showIcon="true"
+                  visible="{= !!${login>/errorMessage} }"
+                  class="errorMessage" />
+
+                <!-- Login Button -->
+                <Button
+                  text="Login"
+                  type="Emphasized"
+                  press=".onLogin"
+                  width="100%"
+                  class="loginButton"
+                  enabled="{= !!${login>/username} &amp;&amp; !!${login>/password} }" />
+
+                <!-- Forgot Password & Sign Up Links -->
+                <HBox justifyContent="Center" spacing="1rem" class="linkContainer">
+                  <Link text="Forgot Password?" press=".onForgotPassword" />
+                  <Text text="|" />
+                  <Link text="Sign Up" press=".onSignUp" />
+                </HBox>
+              </VBox>
+            </content>
+          </Panel>
+
+          <!-- Footer -->
+          <HBox justifyContent="Center" class="loginFooter">
+            <Text text="© SAP SE 2026" class="footerText" />
+          </HBox>
+        </VBox>
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>

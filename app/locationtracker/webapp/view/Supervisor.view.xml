@@ -1,0 +1,190 @@
+<mvc:View
+  controllerName="com.locationtracker.locationtracker.controller.Supervisor"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core"
+  xmlns:f="sap.ui.layout.form"
+  displayBlock="true">
+  <App id="appSupervisor">
+    <pages>
+      <Page title="Supervisor Dashboard - Monitor All Drivers">
+        <headerContent>
+          <Button
+            icon="sap-icon://log"
+            press=".onLogout"
+            tooltip="Logout"
+            type="Transparent" />
+        </headerContent>
+        
+        <content>
+          <VBox class="supervisorPage">
+            <!-- Header Info -->
+            <HBox wrap="Wrap" justifyContent="SpaceBetween" alignItems="Center" class="toolbarRow">
+              <VBox>
+                <Title text="Driver Management & Tracking" level="H2" />
+                <Text text="Monitor all active drivers and their locations" />
+              </VBox>
+              <HBox wrap="Wrap" class="buttonCluster">
+                <Button text="Refresh" icon="sap-icon://refresh" press=".onRefreshDrivers" />
+                <Button text="Export Report" icon="sap-icon://download" press=".onExportReport" />
+              </HBox>
+            </HBox>
+
+            <!-- Active Drivers Statistics -->
+            <HBox wrap="Wrap" class="cardRow">
+              <Panel headerText="Active Drivers" class="metricCard">
+                <content>
+                  <VBox class="metricContent">
+                    <ObjectNumber number="{supervisor>/activeDriversCount}" state="Good" />
+                    <Text text="Currently tracking" />
+                  </VBox>
+                </content>
+              </Panel>
+
+              <Panel headerText="Total Trips" class="metricCard">
+                <content>
+                  <VBox class="metricContent">
+                    <ObjectNumber number="{supervisor>/totalTripsCount}" />
+                    <Text text="All drivers combined" />
+                  </VBox>
+                </content>
+              </Panel>
+
+              <Panel headerText="Completed Trips" class="metricCard">
+                <content>
+                  <VBox class="metricContent">
+                    <ObjectNumber number="{supervisor>/completedTripsCount}" state="Success" />
+                    <Text text="This session" />
+                  </VBox>
+                </content>
+              </Panel>
+            </HBox>
+
+            <!-- Drivers Table -->
+            <Panel headerText="Drivers Overview" expandable="true" expanded="true" class="driversPanel">
+              <content>
+                <Table
+                  id="driversTable"
+                  items="{supervisor>/drivers}"
+                  class="driversTable">
+                  <columns>
+                    <Column>
+                      <Text text="Driver Name" />
+                    </Column>
+                    <Column>
+                      <Text text="Status" />
+                    </Column>
+                    <Column>
+                      <Text text="Current Trip" />
+                    </Column>
+                    <Column>
+                      <Text text="Location" />
+                    </Column>
+                    <Column>
+                      <Text text="Last Update" />
+                    </Column>
+                    <Column>
+                      <Text text="Actions" />
+                    </Column>
+                  </columns>
+                  <items>
+                    <ColumnListItem>
+                      <cells>
+                        <Text text="{supervisor>fullName}" />
+                        <ObjectStatus
+                          text="{supervisor>status}"
+                          state="{= ${supervisor>status} === 'TRACKING' ? 'Success' : 'None' }" />
+                        <Text text="{supervisor>currentTrip}" />
+                        <Text text="{= ${supervisor>lastLocation} ? ${supervisor>lastLocation/latitude} + ', ' + ${supervisor>lastLocation/longitude} : 'No data' }" />
+                        <Text text="{supervisor>lastUpdate}" />
+                        <HBox spacing="0.5rem">
+                          <Button
+                            icon="sap-icon://map"
+                            press=".onViewDriverMap"
+                            ariaLabel="View map"
+                            type="Ghost" />
+                          <Button
+                            icon="sap-icon://course"
+                            press=".onViewTripsHistory"
+                            ariaLabel="View trip history"
+                            type="Ghost" />
+                        </HBox>
+                      </cells>
+                    </ColumnListItem>
+                  </items>
+                </Table>
+              </content>
+            </Panel>
+
+            <!-- Map View for Selected Driver -->
+            <Panel headerText="Driver Map View" expandable="true" class="mapPanel">
+              <content>
+                <HBox>
+                  <VBox width="70%">
+                    <core:HTML content="&lt;div id='supervisorMapContainer' style='height: 500px; width: 100%;'&gt;&lt;/div&gt;" />
+                  </VBox>
+                  <VBox width="30%" class="mapSidebar">
+                    <Title text="Selected Driver" level="H4" />
+                    <Text text="{supervisor>/selectedDriver/fullName}" class="driverName" />
+                    <ObjectStatus
+                      title="Status"
+                      text="{supervisor>/selectedDriver/status}"
+                      state="{= ${supervisor>/selectedDriver/status} === 'TRACKING' ? 'Success' : 'None' }" />
+                    <Text title="Email" text="{supervisor>/selectedDriver/email}" />
+                    <Text title="Current Latitude" text="{supervisor>/selectedDriver/lastLocation/latitude}" />
+                    <Text title="Current Longitude" text="{supervisor>/selectedDriver/lastLocation/longitude}" />
+                  </VBox>
+                </HBox>
+              </content>
+            </Panel>
+
+            <!-- Trip History -->
+            <Panel headerText="Trip Detailed Analysis" expandable="true" class="tripsPanel">
+              <content>
+                <Table
+                  id="tripsHistoryTable"
+                  items="{supervisor>/selectedDriverTrips}"
+                  class="tripsTable">
+                  <columns>
+                    <Column>
+                      <Text text="Trip Title" />
+                    </Column>
+                    <Column>
+                      <Text text="Started" />
+                    </Column>
+                    <Column>
+                      <Text text="Ended" />
+                    </Column>
+                    <Column>
+                      <Text text="Status" />
+                    </Column>
+                    <Column>
+                      <Text text="Points Recorded" />
+                    </Column>
+                    <Column>
+                      <Text text="Distance" />
+                    </Column>
+                  </columns>
+                  <items>
+                    <ColumnListItem>
+                      <cells>
+                        <Text text="{supervisor>title}" />
+                        <Text text="{supervisor>startedAt}" />
+                        <Text text="{supervisor>endedAt}" />
+                        <ObjectStatus
+                          text="{supervisor>status}"
+                          state="{= ${supervisor>status} === 'COMPLETED' ? 'Success' : 'Information' }" />
+                        <ObjectNumber number="{supervisor>pointsCount}" />
+                        <Text text="{supervisor>distance}" />
+                      </cells>
+                    </ColumnListItem>
+                  </items>
+                </Table>
+              </content>
+            </Panel>
+          </VBox>
+        </content>
+      </Page>
+    </pages>
+  </App>
+</mvc:View>

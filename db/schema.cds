@@ -1,7 +1,22 @@
 namespace tracker;
 using { cuid, managed } from '@sap/cds/common';
+
+entity Users : cuid, managed {
+  username  : String(100) not null;
+  password  : String(255) not null;
+  email     : String(100);
+  fullName  : String(150);
+  role      : String(20) enum {
+    DRIVER;
+    SUPERVISOR;
+  } default 'DRIVER';
+  isActive  : Boolean default true;
+  key username : String(100);
+}
+
 entity Trips : cuid, managed {
   title     : String(120);
+  driver    : Association to Users;
   startedAt : Timestamp;
   endedAt   : Timestamp;
   status    : String(20) enum {

@@ -1,0 +1,18 @@
+<mvc:View
+  controllerName="com.locationtracker.locationtracker.controller.Dashboard"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  displayBlock="true">
+  <App id="appDashboard">
+    <pages>
+      <Page title="Dashboard">
+        <content>
+          <VBox alignItems="Center" justifyContent="Center" height="100%">
+            <BusyIndicator size="Large" />
+            <Text text="Loading dashboard..." />
+          </VBox>
+        </content>
+      </Page>
+    </pages>
+  </App>
+</mvc:View>

@@ -1,8 +1,9 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
   "sap/m/MessageBox",
-  "sap/m/MessageToast"
-], function (Controller, MessageBox, MessageToast) {
+  "sap/m/MessageToast",
+  "sap/ui/model/json/JSONModel"
+], function (Controller, MessageBox, MessageToast, JSONModel) {
   "use strict";
   const MAX_LATENCY_SAMPLES = 200;
 
@@ -14,7 +15,25 @@ sap.ui.define([
       this._marker = null;
       this._points = [];
       this._clientUpdateLatencyMs = [];
-      this._viewModel = this.getOwnerComponent().getModel("view");
+      
+      this.oComponent = this.getOwnerComponent();
+      this.oRouter = this.oComponent.getRouter();
+
+      // Initialize view model
+      const oViewModel = new JSONModel({
+        currentTrip: null,
+        tracking: false,
+        statusText: "Ready to start tracking",
+        permissionText: "Allow access to location",
+        totalPoints: 0,
+        lastPoint: {}
+      });
+      
+      this.getView().setModel(oViewModel, "view");
+      this._viewModel = oViewModel;
+
+      // Check authentication
+      this._checkAuthentication();
 
       this.getView().addEventDelegate({
         onAfterShow: function () {
@@ -24,6 +43,42 @@ sap.ui.define([
 
       this._loadActiveTrip();
       this._refreshMetrics();
+    },
+
+    _checkAuthentication: function () {
+      const currentUser = JSON.parse(sessionStorage.getItem("currentUser") || "{}");
+      
+      if (!currentUser.username) {
+        // Not authenticated, redirect to login
+        this.oRouter.navTo("RouteLogin");
+        return false;
+      }
+
+      if (currentUser.role !== "DRIVER") {
+        MessageBox.error("This view is only for drivers");
+        this.oRouter.navTo("RouteLogin");
+        return false;
+      }
+
+      // Store user model
+      const oUserModel = new JSONModel(currentUser);
+      this.oComponent.setModel(oUserModel, "user");
+      
+      return true;
+    },
+
+    onLogout: function () {
+      MessageBox.confirm("Are you sure you want to logout?", {
+        title: "Logout",
+        onClose: (sAction) => {
+          if (sAction === MessageBox.Action.OK) {
+            sessionStorage.removeItem("currentUser");
+            localStorage.removeItem("rememberedUser");
+            this.oRouter.navTo("RouteLogin");
+            MessageToast.show("Logged out successfully");
+          }
+        }
+      });
     },
 
     onAfterRendering: function () {

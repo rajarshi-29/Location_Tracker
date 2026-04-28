@@ -1,4 +1,132 @@
 /* Enter your custom styles here */
+
+/* ============ LOGIN PAGE STYLES ============ */
+.loginPage {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+}
+
+.loginContainer {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.loginPanel {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 2.5rem;
+}
+
+.loginHeader {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.appTitle {
+  color: #333;
+  margin-bottom: 0.5rem !important;
+  font-weight: bold;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.loginForm {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.inputField {
+  border-radius: 0.5rem;
+  border: 2px solid #e0e0e0 !important;
+}
+
+.rememberMe {
+  color: #555;
+  margin: 1rem 0 !important;
+}
+
+.errorMessage {
+  margin-bottom: 1rem !important;
+  border-radius: 0.5rem;
+}
+
+.loginButton {
+  border-radius: 0.5rem;
+  font-weight: 600;
+  margin-top: 1rem !important;
+  height: 2.5rem;
+}
+
+.linkContainer {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.linkContainer .sapMLink {
+  color: #667eea;
+  font-weight: 500;
+}
+
+.loginFooter {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.footerText {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+/* ============ SUPERVISOR PAGE STYLES ============ */
+.supervisorPage {
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.driversPanel {
+  margin: 1rem 0;
+}
+
+.driversTable {
+  width: 100%;
+}
+
+.mapPanel {
+  margin: 1rem 0;
+}
+
+.mapSidebar {
+  background: #f5f5f5;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  gap: 1rem;
+}
+
+.driverName {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.tripsPanel {
+  margin: 1rem 0;
+}
+
+.tripsTable {
+  width: 100%;
+}
+
+/* ============ TRACKER PAGE STYLES ============ */
 .trackerPage {
   gap: 1rem;
   padding: 1rem;

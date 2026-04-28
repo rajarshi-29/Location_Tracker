@@ -7,6 +7,14 @@
   <App id="app">
     <pages>
       <Page title="Live Location Tracker">
+        <headerContent>
+          <Button
+            icon="sap-icon://log"
+            press=".onLogout"
+            tooltip="Logout"
+            type="Transparent" />
+        </headerContent>
+        
         <content>
           <VBox class="trackerPage">
             <HBox class="toolbarRow" wrap="Wrap" justifyContent="SpaceBetween" alignItems="Center">
