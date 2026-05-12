@@ -6,7 +6,8 @@
   "scripts": {
     "start": "cds-serve",
     "watch": "cds watch",
-    "watch-locationtracker": "cds watch --open com.locationtracker.locationtracker/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-locationtracker": "cds watch --open com.locationtracker.locationtracker/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "build": "ui5 build --config ui5.yaml --clean-dest --dest dist && cp xs-app.json dist/xs-app.json && (cd dist && zip -rq locationtracker.zip .)"
   },
   "dependencies": {
     "@cap-js/hana": "^2",
@@ -17,7 +18,8 @@
     "@cap-js/sqlite": "^2",
     "@sap/cds-dk": "^9",
     "@sap/ux-ui5-tooling": "^1.23.0",
-    "cds-plugin-ui5": "^0.13.0"
+    "cds-plugin-ui5": "^0.13.0",
+    "@ui5/cli": "^4.0.17"
   },
   "cds": {
     "folders": {
