@@ -40,7 +40,8 @@ cds.on("bootstrap", (app) => {
         let secCtx;
         try {
           secCtx = await createSecurityContext(svc, { req });
-        } catch {
+        } catch (err) {
+          cds.log("server").warn("JWT verification failed:", err.message);
           return res.status(401).json({ error: "Invalid or expired token" });
         }
 
@@ -53,32 +54,36 @@ cds.on("bootstrap", (app) => {
 
         const email = normalizeEmail(secCtx.getLogonName());
 
-        // Fetch the trip once – used by both role branches below
-        const trip = await db.run(
-          SELECT.one.from("tracker.Trips").where({ ID: tripId })
-        );
-        if (!trip) {
-          return res.status(404).json({ error: "Trip not found" });
-        }
-
         if (isDriver) {
-          // Driver: trip must belong to the requesting driver
+          // Fail fast: check driver profile before fetching the trip
           const driver = await db.run(
             SELECT.one.from("tracker.Drivers").where({ email })
           );
           if (!driver || driver.status !== "ACTIVE") {
             return res.status(403).json({ error: "No active driver profile is assigned to this login" });
           }
+          const trip = await db.run(
+            SELECT.one.from("tracker.Trips").where({ ID: tripId })
+          );
+          if (!trip) {
+            return res.status(404).json({ error: "Trip not found" });
+          }
           if (trip.driver_ID !== driver.ID) {
             return res.status(403).json({ error: "Drivers can only access their own trips" });
           }
         } else {
-          // FleetAdmin: trip must belong to one of the admin's own drivers
+          // Fail fast: check admin profile before fetching the trip
           const admin = await db.run(
             SELECT.one.from("tracker.Admins").where({ email })
           );
           if (!admin) {
             return res.status(403).json({ error: "No admin profile found for this login" });
+          }
+          const trip = await db.run(
+            SELECT.one.from("tracker.Trips").where({ ID: tripId })
+          );
+          if (!trip) {
+            return res.status(404).json({ error: "Trip not found" });
           }
           const driver = await db.run(
             SELECT.one.from("tracker.Drivers").where({ ID: trip.driver_ID })
